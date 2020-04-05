@@ -40,6 +40,8 @@ class TaskList extends React.Component {
             return (<TaskItem
                     key={index}
                     item={task}
+                    onUpdateStatus={this.props.onUpdateStatus}
+                    onDeleteItem={this.props.onDeleteItem}
                 />
             )
         })

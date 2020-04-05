@@ -17,7 +17,6 @@ class App extends React.Component {
         this.onToggleForm = this.onToggleForm.bind(this)
         this.onCloseForm = this.onCloseForm.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
-        this.onStatusUpdate = this.onStatusUpdate.bind(this)
     }
 
     componentDidMount() {
@@ -49,8 +48,29 @@ class App extends React.Component {
         localStorage.setItem('tasks', JSON.stringify(tasks))
     }
 
-    onStatusUpdate(data) {
+    onStatusUpdate = (id) => {
+        let {tasks} = this.state;
+        let updateTask = tasks.map((item, index) => {
+            if (item.id === id) {
+                item.status = !item.status
+            }
+            return item
+        })
+        this.setState({
+            tasks: updateTask
+        })
+        localStorage.setItem('tasks', JSON.stringify(updateTask))
 
+    }
+
+
+    onDeleteItem = (id) => {
+        let {tasks} = this.state;
+        let updateTask = tasks.filter(item => item.id !== id);
+        this.setState({
+            tasks: updateTask
+        })
+        localStorage.setItem('tasks', JSON.stringify(updateTask))
     }
 
     render() {
@@ -80,7 +100,8 @@ class App extends React.Component {
                             {/*List*/}
                             <TaskList
                                 tasks={tasks}
-                                onStatusUpdate={this.onStatusUpdate}
+                                onUpdateStatus={this.onStatusUpdate}
+                                onDeleteItem={this.onDeleteItem}
                             />
                             {/*List*/}
                         </div>
