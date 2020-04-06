@@ -12,9 +12,10 @@ class App extends React.Component {
         super(props);
         this.state = {
             tasks: [],
-            isDisplayForm: false
+            isDisplayForm: false,
+            itemEditing: null
         }
-        this.onToggleForm = this.onToggleForm.bind(this)
+        this.onShowForm = this.onShowForm.bind(this)
         this.onCloseForm = this.onCloseForm.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -25,27 +26,40 @@ class App extends React.Component {
         })
     }
 
-    onToggleForm() {
+    onShowForm() {
         this.setState({
-            isDisplayForm: !this.state.isDisplayForm
+            isDisplayForm: true,
+            itemEditing: null
         });
 
     }
 
-    onCloseForm(data) {
+    onCloseForm() {
         this.setState({
-            isDisplayForm: data
+            isDisplayForm: false,
+            itemEditing: null
         });
     }
 
     onSubmit(data) {
-        data.id = randomstring.generate(5)
         let {tasks} = this.state;
-        tasks.push(data)
+        if (data.id === null) {
+            data.id = randomstring.generate(5)
+            tasks.push(data)
+        } else {
+            tasks = tasks.map((item, index) => {
+                if (item.id === data.id) {
+                    item = data
+                }
+                return item
+            })
+        }
         this.setState({
-            tasks: tasks
+            tasks: tasks,
+            itemEditing: null
         })
         localStorage.setItem('tasks', JSON.stringify(tasks))
+        this.onCloseForm();
     }
 
     onStatusUpdate = (id) => {
@@ -63,7 +77,6 @@ class App extends React.Component {
 
     }
 
-
     onDeleteItem = (id) => {
         let {tasks} = this.state;
         let updateTask = tasks.filter(item => item.id !== id);
@@ -73,13 +86,20 @@ class App extends React.Component {
         localStorage.setItem('tasks', JSON.stringify(updateTask))
     }
 
-    onUpdateItem = (id) => {
-
+    onUpdateItem = (task) => {
+        this.setState({
+            itemEditing: task,
+            isDisplayForm: true
+        })
     }
 
     render() {
-        var {tasks, isDisplayForm} = this.state;
-        var eleTaskForm = isDisplayForm ? <TaskForm onSubmit={this.onSubmit} closeForm={this.onCloseForm}/> : ''
+        var {tasks, isDisplayForm, itemEditing} = this.state;
+        var eleTaskForm = isDisplayForm ? <TaskForm
+            onSubmit={this.onSubmit}
+            closeForm={this.onCloseForm}
+            itemEditing={itemEditing}
+        /> : ''
         return (
             <div className="container">
                 <div className="text-center">
@@ -94,7 +114,7 @@ class App extends React.Component {
                     </div>
                     <div
                         className={isDisplayForm ? 'col-xs-8 col-sm-8 col-md-8 col-lg-8' : 'col-xs-12 col-sm-12 col-md-12 col-lg-12'}>
-                        <button type="button" className="btn btn-primary" onClick={this.onToggleForm}>
+                        <button type="button" className="btn btn-primary" onClick={this.onShowForm}>
                             <span className="fa fa-plus mr-5"></span>Thêm Công Việc
                         </button>
                         {/*Controler*/}

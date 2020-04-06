@@ -11,7 +11,7 @@ class TaskItem extends React.Component {
     }
 
     onUpdate = () => {
-        this.props.onUpdateItem(this.props.item.id)
+        this.props.onUpdateItem(this.props.item)
     }
 
     render() {
