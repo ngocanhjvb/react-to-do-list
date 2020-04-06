@@ -73,6 +73,10 @@ class App extends React.Component {
         localStorage.setItem('tasks', JSON.stringify(updateTask))
     }
 
+    onUpdateItem = (id) => {
+
+    }
+
     render() {
         var {tasks, isDisplayForm} = this.state;
         var eleTaskForm = isDisplayForm ? <TaskForm onSubmit={this.onSubmit} closeForm={this.onCloseForm}/> : ''
@@ -102,6 +106,7 @@ class App extends React.Component {
                                 tasks={tasks}
                                 onUpdateStatus={this.onStatusUpdate}
                                 onDeleteItem={this.onDeleteItem}
+                                onUpdateItem={this.onUpdateItem}
                             />
                             {/*List*/}
                         </div>

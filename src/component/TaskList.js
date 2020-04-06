@@ -42,6 +42,7 @@ class TaskList extends React.Component {
                     item={task}
                     onUpdateStatus={this.props.onUpdateStatus}
                     onDeleteItem={this.props.onDeleteItem}
+                    onUpdateItem={this.props.onUpdateItem}
                 />
             )
         })
