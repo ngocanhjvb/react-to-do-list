@@ -13,11 +13,18 @@ class App extends React.Component {
         this.state = {
             tasks: [],
             isDisplayForm: false,
-            itemEditing: null
+            itemEditing: null,
+            filter: {
+                name: '',
+                status: -1
+            },
+            keyword: ''
         }
         this.onShowForm = this.onShowForm.bind(this)
         this.onCloseForm = this.onCloseForm.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+        this.onFilter = this.onFilter.bind(this)
+        this.onSearch = this.onSearch.bind(this)
     }
 
     componentDidMount() {
@@ -93,8 +100,44 @@ class App extends React.Component {
         })
     }
 
+    onFilter(filterName, filterStatus) {
+        this.setState({
+            filter: {
+                name: filterName.toLowerCase(),
+                status: filterStatus
+            }
+        })
+    }
+
+    onSearch(keyword) {
+        this.setState({
+            keyword: keyword.toLowerCase()
+        })
+    }
+
     render() {
-        var {tasks, isDisplayForm, itemEditing} = this.state;
+        var {tasks, isDisplayForm, itemEditing, filter, keyword} = this.state;
+        if (filter) {
+            if (filter.name) {
+                tasks = tasks.filter((task) => {
+                    return task.name.toLowerCase().search(filter.name) !== -1
+                })
+            }
+            if (filter.status) {
+                tasks = tasks.filter((task) => {
+                    if (filter.status == -1) {
+                        return task
+                    } else {
+                        return task.status == (filter.status == 1)
+                    }
+                })
+            }
+        }
+        if (keyword) {
+            tasks = tasks.filter((task) => {
+                return task.name.toLowerCase().search(keyword) !== -1
+            })
+        }
         var eleTaskForm = isDisplayForm ? <TaskForm
             onSubmit={this.onSubmit}
             closeForm={this.onCloseForm}
@@ -118,7 +161,9 @@ class App extends React.Component {
                             <span className="fa fa-plus mr-5"></span>Thêm Công Việc
                         </button>
                         {/*Controler*/}
-                        <TaskControl/>
+                        <TaskControl
+                            onSearch={this.onSearch}
+                        />
                         {/*Controler*/}
                         <div className="row mt-15">
                             {/*List*/}
@@ -127,6 +172,7 @@ class App extends React.Component {
                                 onUpdateStatus={this.onStatusUpdate}
                                 onDeleteItem={this.onDeleteItem}
                                 onUpdateItem={this.onUpdateItem}
+                                onFilter={this.onFilter}
                             />
                             {/*List*/}
                         </div>
