@@ -3,6 +3,7 @@ import './App.css';
 import TaskForm from "./component/TaskForm";
 import TaskControl from "./component/TaskControl";
 import TaskList from "./component/TaskList";
+import TaskSortControl from "./component/TaskSortControl";
 
 var randomstring = require("randomstring");
 
@@ -115,8 +116,15 @@ class App extends React.Component {
         })
     }
 
+    onSort = (sortBy, sortValue) => {
+        this.setState({
+            sortBy: sortBy,
+            sortValue: sortValue
+        })
+    }
+
     render() {
-        var {tasks, isDisplayForm, itemEditing, filter, keyword} = this.state;
+        var {tasks, isDisplayForm, itemEditing, filter, keyword, sortBy, sortValue} = this.state;
         if (filter) {
             if (filter.name) {
                 tasks = tasks.filter((task) => {
@@ -138,6 +146,22 @@ class App extends React.Component {
                 return task.name.toLowerCase().search(keyword) !== -1
             })
         }
+
+        if(sortBy === 'name'){
+            tasks.sort((a, b) => {
+                if(a.name > b.name) return sortValue;
+                else if(a.name < b.name) return -sortValue;
+                else return 0;
+            });
+        }else{
+            tasks.sort((a, b) => {
+                if(a.status > b.status) return -sortValue;
+                else if(a.status < b.status) return sortValue;
+                else return 0;
+            });
+        }
+
+
         var eleTaskForm = isDisplayForm ? <TaskForm
             onSubmit={this.onSubmit}
             closeForm={this.onCloseForm}
@@ -163,6 +187,9 @@ class App extends React.Component {
                         {/*Controler*/}
                         <TaskControl
                             onSearch={this.onSearch}
+                            onSort={this.onSort}
+                            sortBy={sortBy}
+                            sortValue={sortValue}
                         />
                         {/*Controler*/}
                         <div className="row mt-15">
