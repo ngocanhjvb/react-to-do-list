@@ -3,7 +3,8 @@ import './App.css';
 import TaskForm from "./component/TaskForm";
 import TaskControl from "./component/TaskControl";
 import TaskList from "./component/TaskList";
-import TaskSortControl from "./component/TaskSortControl";
+import _ from 'lodash';
+
 
 var randomstring = require("randomstring");
 
@@ -71,17 +72,14 @@ class App extends React.Component {
     }
 
     onStatusUpdate = (id) => {
+
         let {tasks} = this.state;
-        let updateTask = tasks.map((item, index) => {
-            if (item.id === id) {
-                item.status = !item.status
-            }
-            return item
-        })
+        var index = _.findIndex(tasks, function(o) { return o.id == id; });
+        tasks[index].status = !tasks[index].status;
         this.setState({
-            tasks: updateTask
+            tasks: tasks
         })
-        localStorage.setItem('tasks', JSON.stringify(updateTask))
+        localStorage.setItem('tasks', JSON.stringify(tasks))
 
     }
 
